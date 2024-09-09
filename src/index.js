@@ -3,18 +3,20 @@ const express = require('express');
 const path = require('path'); 
 
 const  morgan = require('morgan');
-
+const route = require('./routes');
 // dang lam viec voi handlebars
 const { engine } = require("express-handlebars");
 
 const app = express();
 const port = 3000;
 // định nghĩa tuyến đường /trang-chu 
-
 app.use(express.static(path.join(__dirname, 'public' ))); // xử lí static file, thư mục tĩnh thì nó lao vào thư mục public
-
+app.use(express.urlencoded({
+  extended: true
+}));
+app.use(express.json());  
 //http logger
-app.use(morgan("combined"))
+// app.use(morgan("combined"))
 
 //Template engine
 app.engine('hbs', engine({
@@ -25,12 +27,14 @@ app.set('views', path.join(__dirname,'resources/views'))
 console.log('Path: ', path.join(__dirname, 'views')); 
 console.log(__dirname);
 
-app.get('/', (req, res) => {
-    res.render('home'); // render trang nao thi lay trang do dua vao body
-})
-app.get('/news', (req,res ) =>{
-  res.render('news');
-})
+// dinh nghia tuyen duong de truy cap vao trang web
+//app la instance cua express, path la duong dan de truy cap, handler function
+// req chua thong tin yeu cau tu ung dung phia nguoi dung len server 
+// res chua lua chon tuy chinh ket qua tra ve qua response  
+
+// day la tuyen duong 
+route(app);
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
